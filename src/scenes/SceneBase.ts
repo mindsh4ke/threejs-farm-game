@@ -9,6 +9,24 @@ export default class SceneBase extends THREE.Scene {
     protected readonly fbxLoader = new FBXLoader();
     protected readonly textureLoader = new THREE.TextureLoader();
 
+    public onMouseMove (event: MouseEvent) {
+        
+    }
+
+    public onMouseDown (event: MouseEvent) {
+
+    }
+
+    public onMouseUp (event: MouseEvent) {
+
+    }
+
+    protected async initialize () {
+        document.addEventListener("mousemove", (event) => this.onMouseMove(event), false);
+        document.addEventListener("mousedown", (event) => this.onMouseDown(event), false);
+        document.addEventListener("mouseup", (event) => this.onMouseUp(event), false);
+    }
+
     protected async createObjModelWithMTL(path: string, mtl?: MTLLoader.MaterialCreator) : Promise<THREE.Group<THREE.Object3DEventMap>> {
         if (mtl != null) {
             this.objLoader.setMaterials(mtl);

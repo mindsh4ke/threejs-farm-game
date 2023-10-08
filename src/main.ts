@@ -6,6 +6,10 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/examples/jsm/postprocessing/SSAOPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 
+THREE.ColorManagement.enabled = true;
+
+
+
 const width = window.innerWidth;
 const height = window.innerHeight;
 
@@ -15,6 +19,8 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.shadowMap.enabled = true;
 renderer.setSize(width, height);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping
 
 const composer = new EffectComposer(renderer);
 
@@ -33,7 +39,7 @@ controls.target.set(0, 0.5, 0);
 controls.update();
 
 
-const scene = new GameScene();
+const scene = new GameScene(mainCamera);
 await scene.initialize();
 
 const renderPass = new RenderPass(scene, mainCamera);
