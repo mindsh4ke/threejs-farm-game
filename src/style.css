@@ -1,3 +1,5 @@
+
+
 * {
   margin: 0;
   padding: 0;
@@ -9,4 +11,20 @@ canvas {
 
 body {
   margin:0;
+}
+
+#ui {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+.ui-button {
+  background-color: aqua;
+  color: white;
+  padding: 10;
+  pointer-events: all;
 }
