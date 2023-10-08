@@ -57,11 +57,13 @@ export default class SceneBase extends THREE.Scene {
 
     protected async createTextureMaterial (path: string) : Promise<THREE.Material> {
         const tex = await this.textureLoader.loadAsync(path);
-        return new THREE.MeshLambertMaterial({
+        return new THREE.MeshStandardMaterial({
             map: tex,
-            flatShading: true,
-            reflectivity: 2
         });
+    }
+
+    public tick () {
+        
     }
     
 }
