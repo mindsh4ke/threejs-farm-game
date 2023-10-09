@@ -2,19 +2,34 @@ import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import PhysicsUtils from '../utils/Physics';
+import GameObject from '../objects/GameObject';
+import Layers from '../core/Layers';
 
 export default class SceneBase extends THREE.Scene {
     protected readonly mtlLoader = new MTLLoader();
     protected readonly objLoader = new OBJLoader();
     protected readonly fbxLoader = new FBXLoader();
     protected readonly textureLoader = new THREE.TextureLoader();
+    protected mainCamera: THREE.Camera;
+
+    constructor(camera: THREE.Camera) {
+        super();
+        this.mainCamera = camera;
+    }
 
     public onMouseMove (event: MouseEvent) {
         
     }
 
     public onMouseDown (event: MouseEvent) {
-
+        const objects = PhysicsUtils.raycastFromMouse(new THREE.Vector2(event.clientX, event.clientY), this.mainCamera, this.children, Layers.gameObjects);
+        objects.forEach(element => {
+            console.log(element.object)
+            if (element instanceof GameObject && (element as GameObject).userData.tag === "clickable") {
+                (element.object as GameObject).onClick()
+            }
+        })
     }
 
     public onMouseUp (event: MouseEvent) {
@@ -27,58 +42,7 @@ export default class SceneBase extends THREE.Scene {
         document.addEventListener("mouseup", (event) => this.onMouseUp(event), false);
     }
 
-    protected async createObjModelWithMTL(path: string, mtl?: MTLLoader.MaterialCreator) : Promise<THREE.Group<THREE.Object3DEventMap>> {
-        if (mtl != null) {
-            this.objLoader.setMaterials(mtl);
-        }
-        const modelRoot = await this.objLoader.loadAsync(path);
-        modelRoot.rotateY(Math.PI * 0.5);
-        modelRoot.traverse(function(node) {
-            node.castShadow = true;
-            node.receiveShadow = true;
-        });
-        return modelRoot;
-    }
-
-    protected async createMtl (path: string) : Promise<MTLLoader.MaterialCreator> {
-        const newMtl = await this.mtlLoader.loadAsync(path);
-        newMtl.preload();
-        return newMtl;
-    }
-
-    protected async createObjModel(path: string, material?: THREE.Material) : Promise<THREE.Group<THREE.Object3DEventMap>> {
-        const modelRoot = await this.objLoader.loadAsync(path);
-        modelRoot.rotateY(Math.PI * 0.5);
-        modelRoot.traverse(function(node) {
-            if (material != null) {
-                (node as THREE.Mesh).material = material!;
-            }
-            node.castShadow = true;
-            node.receiveShadow = true;
-        });
-        modelRoot.scale.set(0.25,0.25,0.25);
-        return modelRoot;
-    }
-
-    protected async createFbxModel (path: string, material?: THREE.Material) : Promise<THREE.Group<THREE.Object3DEventMap>> {
-        const modelRoot = await this.fbxLoader.loadAsync(path);
-        modelRoot.rotateY(Math.PI * 0.5);
-        modelRoot.traverse((node) => {
-            if (material != null) {
-                (node as THREE.Mesh).material = material!;
-            }
-            node.castShadow = true;
-            node.receiveShadow = true;
-        });
-        return modelRoot;
-    }
-
-    protected async createTextureMaterial (path: string) : Promise<THREE.Material> {
-        const tex = await this.textureLoader.loadAsync(path);
-        return new THREE.MeshStandardMaterial({
-            map: tex,
-        });
-    }
+    
 
     public tick () {
         
