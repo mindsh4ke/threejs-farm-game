@@ -23,12 +23,13 @@ export default class SceneBase extends THREE.Scene {
     }
 
     public onMouseDown (event: MouseEvent) {
-        const objects = PhysicsUtils.raycastFromMouse(new THREE.Vector2(event.clientX, event.clientY), this.mainCamera, this.children, Layers.gameObjects);
+        const objects = PhysicsUtils.raycastFromMouse(new THREE.Vector2(event.clientX, event.clientY), this.mainCamera, this.children);
         objects.forEach(element => {
-            console.log(element.object)
-            if (element instanceof GameObject && (element as GameObject).userData.tag === "clickable") {
-                (element.object as GameObject).onClick()
-            }
+            element.object.traverseAncestors(node => {
+                if (node instanceof GameObject) {
+                    (node as GameObject).onClick()
+                }
+            })
         })
     }
 

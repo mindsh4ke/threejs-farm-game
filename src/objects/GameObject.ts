@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Layers from '../core/Layers';
 
-export default class GameObject extends THREE.Object3D<THREE.Object3DEventMap> {
+export default class GameObject extends THREE.Mesh {
 
 
     constructor() {
@@ -9,7 +9,7 @@ export default class GameObject extends THREE.Object3D<THREE.Object3DEventMap> {
     }
 
     public async initialize () {
-        this.scale.set(0.25,0.25,0.25);
+        
     }
 
     public async tick () {
