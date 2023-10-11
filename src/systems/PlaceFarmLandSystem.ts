@@ -6,6 +6,7 @@ import Materials from '../core/Materials';
 import ModelUtils from '../utils/ModelUtils';
 import FarmLand from '../objects/FarmLand';
 import Layers from '../core/Layers';
+import GameObject from '../objects/GameObject';
 
 export default class PlaceFarmLandSystem {
 
@@ -19,6 +20,8 @@ export default class PlaceFarmLandSystem {
     private dirtFarmLand: THREE.Object3D;
     private harvestedFarmland: THREE.Object3D;
     private mainGrid: THREE.GridHelper;
+
+    public farmlands: Array<GameObject> = [];
 
     constructor(scene: THREE.Scene) {
         this.scene = scene;
@@ -67,7 +70,7 @@ export default class PlaceFarmLandSystem {
                 farmLand.position.set(x,0.1,z + 1);
                 farmLand.initialize();
                 this.scene.add(farmLand);
-                
+                this.farmlands.push(farmLand);
             }
         }
     }
@@ -75,11 +78,11 @@ export default class PlaceFarmLandSystem {
     public updatePlaceholder(position: THREE.Vector2) {
         if (this.isPlacing) {
             this.points = [
-                this.firstPoint.x, 0.1, this.firstPoint.y,
-                position.x, 0.1, this.firstPoint.y,
+                this.firstPoint!.x, 0.1, this.firstPoint!.y,
+                position.x, 0.1, this.firstPoint!.y,
                 position.x, 0.1, position.y,
-                this.firstPoint.x, 0.1, position.y,
-                this.firstPoint.x, 0.1, this.firstPoint.y
+                this.firstPoint!.x, 0.1, position.y,
+                this.firstPoint!.x, 0.1, this.firstPoint!.y
             ]
             this.lineGeometry.setPositions(this.points);
         }

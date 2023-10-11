@@ -7,6 +7,7 @@ import { Line2 } from 'three/examples/jsm/lines/Line2.js';
 import PlaceFarmLandSystem from '../systems/PlaceFarmLandSystem';
 import PhysicsUtils from '../utils/Physics';
 import ModelUtils from '../utils/ModelUtils';
+import PlowFarmLandSystem from '../systems/PlowFarmLandSystem';
 
 export default class GameScene extends SceneBase {
 
@@ -16,9 +17,10 @@ export default class GameScene extends SceneBase {
     mainPlane: THREE.Mesh;
 
     placeFarmlandSystem: PlaceFarmLandSystem = new PlaceFarmLandSystem(this);
+    plowFarmlandSystem: PlowFarmLandSystem = new PlowFarmLandSystem(this);
 
-    constructor(camera: THREE.Camera) {
-        super(camera);
+    constructor(camera: THREE.Camera, renderer: THREE.Renderer) {
+        super(camera, renderer);
         this.lightZPos = 1;
     }
 
@@ -45,7 +47,7 @@ export default class GameScene extends SceneBase {
         this.mainPlane.receiveShadow = true;
         this.add(this.mainPlane);
 
-        const light = new THREE.DirectionalLight(0xFFFFFF, 1.2);
+        const light = new THREE.DirectionalLight(0xffe6d4, 1.2);
         light.castShadow = true;
         light.shadow.mapSize = new THREE.Vector2(1024 * 2, 1024 * 2);
         light.position.set(0, 8, 4);
@@ -68,8 +70,30 @@ export default class GameScene extends SceneBase {
 
     setUI() {
         const setFarmButton = document.getElementById('set-farm-button');
+        const plowButton = document.getElementById('plow-button');
+
+        const plantButtons = document.getElementsByClassName('crop-button');
+        for (let i = 0; i < plantButtons.length; i++) {
+            plantButtons.item(i)?.classList.add('w-16', 'h-16', 'rounded-full', 'text-white', 'flex', 'items-center', 'justify-center', 'cursor-pointer', 'hover:ring-2', 'hover:shadow-lg', 'hover:ring-gray-400', 'hover:bg-gray-600', 'hover:-translate-y-1', 'transition-all', 'duration-100');
+        }
+
+        const plantTooltips = document.querySelectorAll('.crop-button .tooltip')
+        plantTooltips.forEach(tooltip => {
+            //, 'h-[250px]'
+            tooltip.classList.add('absolute', 'top-[-270px]', 'w-[200px]', 'bg-slate-700', 'rounded-lg', 'shadow-xl', 'pointer-events-none', 'p-4');
+        })
 
         setFarmButton!.onclick = () => this.setFarmLand();
+        plowButton!.onclick = () => {
+            if (this.plowFarmlandSystem.isPlowing) {
+                this.plowFarmlandSystem.endPlowMode();
+                plowButton!.classList.remove('-translate-y-1', 'shadow-lg', 'bg-slate-700')
+            } else {
+                this.plowFarmlandSystem.startPlowMode();
+                plowButton!.classList.add('-translate-y-1', 'shadow-lg', 'bg-slate-700')
+            }
+            
+        }
     }
 
     async setFarmLand() {
@@ -81,9 +105,15 @@ export default class GameScene extends SceneBase {
     }
 
     override onMouseMove (event: MouseEvent) {
-        const point = PhysicsUtils.singleRaycastFromMouse(new THREE.Vector2(event.clientX, event.clientY), this.mainCamera, this.mainPlane).point;
-        const fixedPoint = new THREE.Vector2(Math.round(point.x),Math.round(point.z));
-        this.placeFarmlandSystem.updatePlaceholder(fixedPoint);
+        if (this.placeFarmlandSystem.isPlacing) {
+            const point = PhysicsUtils.singleRaycastFromMouse(new THREE.Vector2(event.clientX, event.clientY), this.mainCamera, this.mainPlane).point;
+            const fixedPoint = new THREE.Vector2(Math.round(point.x),Math.round(point.z));
+            this.placeFarmlandSystem.updatePlaceholder(fixedPoint);
+        }
+
+        else if (this.plowFarmlandSystem.isPlowing) {
+            this.plowFarmlandSystem.actionPlow(event, this.mainPlane);
+        }
     }
 
     override onMouseDown(event: MouseEvent) {

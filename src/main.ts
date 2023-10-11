@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import GameScene from './scenes/GameScene';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/examples/jsm/postprocessing/SSAOPass.js';
@@ -28,18 +27,7 @@ const composer = new EffectComposer(renderer);
 const mainCamera = new THREE.PerspectiveCamera(45, width / height, 0.01, 100);
 mainCamera.position.z = 5;
 
-
-var controls = new OrbitControls(mainCamera, renderer.domElement);
-controls.screenSpacePanning = true;
-controls.minZoom = 2;
-controls.maxZoom = 2;
-//controls.minPolarAngle = 0.5;
-//controls.maxPolarAngle = 1;
-controls.target.set(0, 0.5, 0);
-controls.update();
-
-
-const scene = new GameScene(mainCamera);
+const scene = new GameScene(mainCamera, renderer);
 await scene.initialize();
 
 const renderPass = new RenderPass(scene, mainCamera);

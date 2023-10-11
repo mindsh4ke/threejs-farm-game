@@ -16,7 +16,7 @@ export default class GameObject extends THREE.Mesh {
 
     }
 
-    public onClick () {
+    public onClick (event: MouseEvent) {
         
     }
 

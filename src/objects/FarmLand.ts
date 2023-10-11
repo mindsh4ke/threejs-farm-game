@@ -18,15 +18,21 @@ export default class FarmLand extends GameObject {
         this.add(harvestedChild);
     }
 
-    override async initialize () {
+    override async initialize() {
         super.initialize();
         this.harvestedChild.visible = this.isHarvested;
         this.dirtChild.visible = !this.isHarvested;
     }
 
-    override onClick(): void {
+    override onClick(event: MouseEvent): void {
+        if (event.button === 0) {
+            
+        }
+    }
+
+    public plow () {
         this.isHarvested = true;
-        this.harvestedChild.visible = this.isHarvested;
-        this.dirtChild.visible = !this.isHarvested;
+            this.harvestedChild.visible = this.isHarvested;
+            this.dirtChild.visible = !this.isHarvested;
     }
 }
