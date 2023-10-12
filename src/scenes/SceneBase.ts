@@ -26,8 +26,10 @@ export default class SceneBase extends THREE.Scene {
         this.renderer = renderer;
         this.orbitControls = new OrbitControls(this.mainCamera, this.renderer.domElement);
         this.orbitControls.screenSpacePanning = true;
-        this.orbitControls.minZoom = 2;
-        this.orbitControls.maxZoom = 2;
+        this.orbitControls.minPolarAngle = Math.PI / 4;
+        this.orbitControls.maxPolarAngle = Math.PI / 4;
+        this.orbitControls.minDistance = 6;
+        this.orbitControls.maxDistance = 20;
         this.orbitControls.target.set(0, 0.5, 0);
         this.orbitControls.update();
 

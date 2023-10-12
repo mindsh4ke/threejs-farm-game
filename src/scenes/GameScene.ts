@@ -8,6 +8,8 @@ import PlaceFarmLandSystem from '../systems/PlaceFarmLandSystem';
 import PhysicsUtils from '../utils/Physics';
 import ModelUtils from '../utils/ModelUtils';
 import PlowFarmLandSystem from '../systems/PlowFarmLandSystem';
+import CropInfo from '../data/CropInfo';
+import CropsInfo from '../data/CropInfo';
 
 export default class GameScene extends SceneBase {
 
@@ -47,7 +49,7 @@ export default class GameScene extends SceneBase {
         this.mainPlane.receiveShadow = true;
         this.add(this.mainPlane);
 
-        const light = new THREE.DirectionalLight(0xffe6d4, 1.2);
+        const light = new THREE.DirectionalLight(0xffe6d4, 1.8);
         light.castShadow = true;
         light.shadow.mapSize = new THREE.Vector2(1024 * 2, 1024 * 2);
         light.position.set(0, 8, 4);
@@ -56,7 +58,7 @@ export default class GameScene extends SceneBase {
         light.target = targetObject;
         this.add(targetObject);
 
-        const ambientLight = new THREE.AmbientLight(0xFFF6E8, .55);
+        const ambientLight = new THREE.AmbientLight(0xFFFFFF, .6);
 
         this.add(light);
         this.add(ambientLight);
@@ -72,15 +74,69 @@ export default class GameScene extends SceneBase {
         const setFarmButton = document.getElementById('set-farm-button');
         const plowButton = document.getElementById('plow-button');
 
+        //Set plant buttons functionality
         const plantButtons = document.getElementsByClassName('crop-button');
         for (let i = 0; i < plantButtons.length; i++) {
-            plantButtons.item(i)?.classList.add('w-16', 'h-16', 'rounded-full', 'text-white', 'flex', 'items-center', 'justify-center', 'cursor-pointer', 'hover:ring-2', 'hover:shadow-lg', 'hover:ring-gray-400', 'hover:bg-gray-600', 'hover:-translate-y-1', 'transition-all', 'duration-100');
+            plantButtons.item(i)?.classList.add('w-16', 'h-16', 'rounded-full', 'text-white', 'flex', 'items-center', 'justify-center', 'cursor-pointer', 'hover:ring-2', 'hover:shadow-lg', 'hover:ring-gray-400', 'hover:bg-gray-600', 'hover:-translate-y-1', 'active:translate-y-0', 'transition-all', 'duration-100');
         }
 
+        //Generate plant tooltips content
         const plantTooltips = document.querySelectorAll('.crop-button .tooltip')
         plantTooltips.forEach(tooltip => {
-            //, 'h-[250px]'
-            tooltip.classList.add('absolute', 'top-[-270px]', 'w-[200px]', 'bg-slate-700', 'rounded-lg', 'shadow-xl', 'pointer-events-none', 'p-4');
+            tooltip.classList.add('absolute', '-top-28', 'w-[200px]', 'bg-slate-700', 'rounded-lg', 'shadow-xl', 'pointer-events-none', 'p-4');
+            const cropInfo = CropsInfo.get(tooltip.id.split('-')[0])!;
+            
+            const tooltipContent = (): HTMLDivElement => {
+                const parent = document.createElement('div') as HTMLDivElement;
+
+                const title = document.createElement('h4') as HTMLHRElement;
+                title.classList.add('font-bold');
+                title.innerText = cropInfo.name;
+
+                const timeContainer = document.createElement('div') as HTMLDivElement;
+                timeContainer.classList.add('flex','flex-row','gap-x-2');
+
+                const growthDurationIcon = document.createElement('span') as HTMLSpanElement;
+                growthDurationIcon.classList.add('material-symbols-rounded');
+                growthDurationIcon.innerText = 'timelapse';
+
+                const growthDurationText = document.createElement('span') as HTMLSpanElement;
+                growthDurationText.innerText = cropInfo.growthDuration.toString();
+
+                timeContainer.append(growthDurationIcon, growthDurationText);
+
+                const moneyContainer = document.createElement('div') as HTMLDivElement;
+                moneyContainer.classList.add('flex','flex-row','gap-x-4');
+
+                const priceContainer = document.createElement('div') as HTMLDivElement;
+                priceContainer.classList.add('flex','flex-row','gap-x-1');
+
+                const priceIcon = document.createElement('span') as HTMLSpanElement;
+                priceIcon.classList.add('material-symbols-rounded');
+                priceIcon.innerText = 'shopping_cart';
+
+                const priceText = document.createElement('span') as HTMLSpanElement;
+                priceText.innerText = cropInfo.buyPrice.toString();
+                priceContainer.append(priceIcon, priceText);
+
+                const sellContainer = document.createElement('div') as HTMLDivElement;
+                sellContainer.classList.add('flex','flex-row','gap-x-1');
+
+                const sellIcon = document.createElement('span') as HTMLSpanElement;
+                sellIcon.classList.add('material-symbols-rounded');
+                sellIcon.innerText = 'storefront';
+
+                const sellText = document.createElement('span') as HTMLSpanElement;
+                sellText.innerText = cropInfo.sellPrice.toString();
+                sellContainer.append(sellIcon, sellText);
+
+                moneyContainer.append(priceContainer, sellContainer);
+
+                parent.append(title, timeContainer, moneyContainer);
+                return parent;
+            }
+
+            tooltip.append(tooltipContent());
         })
 
         setFarmButton!.onclick = () => this.setFarmLand();

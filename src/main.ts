@@ -4,6 +4,9 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { SSAOPass } from 'three/examples/jsm/postprocessing/SSAOPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { ColorCorrectionShader } from 'three/examples/jsm/shaders/ColorCorrectionShader.js';
 
 THREE.ColorManagement.enabled = true;
 
@@ -19,7 +22,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.shadowMap.enabled = true;
 renderer.setSize(width, height);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
 const composer = new EffectComposer(renderer);
 
@@ -38,6 +41,20 @@ ssaoPass.kernelRadius = 1;
 ssaoPass.minDistance = 0.005;
 ssaoPass.maxDistance = 0.1;
 composer.addPass(ssaoPass);
+
+/*
+const fxaaPass = new ShaderPass(FXAAShader);
+
+composer.addPass(renderPass);
+
+const pixelRatio = renderer.getPixelRatio();
+
+fxaaPass.material.uniforms['resolution'].value.x = 1 / (document.getElementById('app')!.offsetWidth * pixelRatio);
+fxaaPass.material.uniforms['resolution'].value.y = 1 / (document.getElementById('app')!.offsetHeight * pixelRatio);
+
+composer.addPass(renderPass);
+composer.addPass(fxaaPass);
+*/
 
 const outputPass = new OutputPass();
 composer.addPass(outputPass);
