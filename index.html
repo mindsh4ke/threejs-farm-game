@@ -17,6 +17,10 @@
   <canvas id="app"></canvas>
   <div id="ui" class="select-none">
 
+    <div id="farmland-info-panel" class="bg-slate-700 rounded-md w-24 h-32">
+
+    </div>
+
     <!--Bottom panel-->
     <div
       class="absolute bottom-0 bg-opacity-50 backdrop-blur-md w-full h-18 bg-white p-4 flex flex-row gap-x-4 items-center pointer-events-auto">
@@ -32,49 +36,54 @@
       </div>
 
       <div id="set-crop-button"
-        class=" w-12 h-12 rounded-full text-white flex items-center justify-center cursor-pointer hover:ring-2 hover:shadow-lg  hover:-translate-y-1 active:translate-y-0 transition-all duration-100">
+        class=" w-12 h-12 rounded-full text-white flex items-center justify-center cursor-pointer hover:shadow-lg  hover:-translate-y-1 active:translate-y-0 transition-all duration-100">
         <span class="material-symbols-rounded">
           <img src="/assets/images/crop.png" />
         </span>
       </div>
 
       <div id="plow-button"
-        class=" w-12 h-12 rounded-full text-white flex items-center justify-center cursor-pointer hover:ring-2 hover:shadow-lg  hover:-translate-y-1 active:translate-y-0 transition-all duration-100">
+        class=" w-12 h-12 rounded-full text-white flex items-center justify-center cursor-pointer hover:shadow-lg  hover:-translate-y-1 active:translate-y-0 transition-all duration-100">
         <span class="material-symbols-rounded">
           <img src="/assets/images/rake.png" />
         </span>
       </div>
 
       <div id="harvest-button"
-        class=" w-12 h-12 rounded-full text-white flex items-center justify-center cursor-pointer hover:ring-2 hover:shadow-lg  hover:-translate-y-1 active:translate-y-0 transition-all duration-100">
+        class=" w-12 h-12 rounded-full text-white flex items-center justify-center cursor-pointer hover:shadow-lg  hover:-translate-y-1 active:translate-y-0 transition-all duration-100">
         <span class="material-symbols-rounded">
           <img src="/assets/images/sickle.png" />
+        </span>
+      </div>
+
+      <div id="inventory-button"
+        class="float-left ml-auto w-12 h-12 rounded-full text-white flex items-center justify-center cursor-pointer hover:shadow-lg  hover:-translate-y-1 active:translate-y-0 transition-all duration-100">
+        <span class="material-symbols-rounded">
+          <img src="/assets/images/barn.png" />
         </span>
       </div>
     </div>
 
     <div id="crops-panel"
-      class="bg-gray-700 w-[90%] bg-opacity-75 backdrop-blur-md h-12 absolute bottom-24 m-auto left-0 right-0 rounded-full flex flex-row items-center justify-between px-8 gap-x-2 pointer-events-auto">
-
-
-      <div class="crop-button">
+      class="hidden bg-gray-700 w-[90%] bg-opacity-75 backdrop-blur-md h-12 absolute bottom-24 m-auto left-0 right-0 rounded-full flex flex-row items-center justify-between px-8 gap-x-2 pointer-events-auto">
+      <div class="crop-button" id="carrot-button">
         <img src="/assets/images/plants/zanahoria.png" />
         <div class="tooltip" id="carrot-tooltip">
         </div>
       </div>
-      <div class="crop-button">
+      <div class="crop-button" id="wheat-button">
         <img src="/assets/images/plants/gluten.png" />
         <div class="tooltip" id="wheat-tooltip"></div>
       </div>
-      <div class="crop-button">
+      <div class="crop-button" id="lettuce-button">
         <img src="/assets/images/plants/lechuga.png" />
         <div class="tooltip" id="lettuce-tooltip"></div>
       </div>
-      <div class="crop-button">
+      <div class="crop-button" id="corn-button">
         <img src="/assets/images/plants/maiz.png" />
         <div class="tooltip" id="corn-tooltip"></div>
       </div>
-      <div class="crop-button">
+      <div class="crop-button" id="onion-button">
         <img src="/assets/images/plants/cebolla.png" />
         <div class="tooltip" id="onion-tooltip"></div>
       </div>

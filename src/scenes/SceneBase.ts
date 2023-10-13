@@ -5,7 +5,6 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import PhysicsUtils from '../utils/Physics';
 import GameObject from '../objects/GameObject';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import Layers from '../core/Layers';
 
 export default class SceneBase extends THREE.Scene {
     protected readonly mtlLoader = new MTLLoader();
@@ -26,10 +25,10 @@ export default class SceneBase extends THREE.Scene {
         this.renderer = renderer;
         this.orbitControls = new OrbitControls(this.mainCamera, this.renderer.domElement);
         this.orbitControls.screenSpacePanning = true;
-        this.orbitControls.minPolarAngle = Math.PI / 4;
-        this.orbitControls.maxPolarAngle = Math.PI / 4;
-        this.orbitControls.minDistance = 6;
-        this.orbitControls.maxDistance = 20;
+        //this.orbitControls.minPolarAngle = Math.PI / 4;
+        //this.orbitControls.maxPolarAngle = Math.PI / 4;
+        //this.orbitControls.minDistance = 6;
+        //this.orbitControls.maxDistance = 20;
         this.orbitControls.target.set(0, 0.5, 0);
         this.orbitControls.update();
 

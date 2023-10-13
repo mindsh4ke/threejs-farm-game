@@ -28,7 +28,7 @@ export default class ModelUtils {
         return newMtl;
     }
 
-    static async createObjModel(path: string, material?: THREE.Material) : Promise<THREE.Group<THREE.Object3DEventMap>> {
+    static async createObjModel(path: string, material?: THREE.Material[] | THREE.Material) : Promise<THREE.Group<THREE.Object3DEventMap>> {
         const modelRoot = await this.objLoader.loadAsync(path);
         modelRoot.rotateY(Math.PI * 0.5);
         modelRoot.traverse(function(node) {

@@ -19,5 +19,7 @@ export default class Materials {
 
     static async initialize () {
         this.data.set('main_material', await ModelUtils.createTextureMaterial('assets/textures/PolygonFarm_Texture_01_A.png'));
+        this.data.set('leaves_diff_material', await ModelUtils.createTextureMaterial('assets/textures/Leaves_Diff.png'));
+        this.data.get('leaves_diff_material')!.transparent = true;
     }
 }

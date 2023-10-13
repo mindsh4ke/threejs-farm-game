@@ -23,6 +23,7 @@ renderer.shadowMap.enabled = true;
 renderer.setSize(width, height);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure =1.4;
 
 const composer = new EffectComposer(renderer);
 

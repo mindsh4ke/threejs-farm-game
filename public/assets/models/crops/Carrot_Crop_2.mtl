@@ -1,0 +1,23 @@
+# Blender 3.5.0 MTL File: 'None'
+# www.blender.org
+
+newmtl Farm.002
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/chupi/Documents/Unity Projects/Farm Game/Assets/_Textures/PolygonFarm_Texture_01_A_2k.psd
+
+newmtl Leaves.002
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd C:/Users/chupi/Documents/Unity Projects/Farm Game/Assets/Mike/Bakes/leaves_Master.tga
+map_d C:/Users/chupi/Documents/Unity Projects/Farm Game/Assets/Mike/Bakes/leaves_Master.tga
+map_Bump -bm 1.000000 C:/Users/chupi/Documents/Unity Projects/Farm Game/Assets/Mike/Bakes/leavessheet_normals.png

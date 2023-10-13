@@ -10,6 +10,9 @@ import ModelUtils from '../utils/ModelUtils';
 import PlowFarmLandSystem from '../systems/PlowFarmLandSystem';
 import CropInfo from '../data/CropInfo';
 import CropsInfo from '../data/CropInfo';
+import PlantFarmLandSystem from '../systems/PlantFarmLandSystem';
+import Models from '../core/Models';
+import HarvestFarmLandSystem from '../systems/HarvestFarmLandSystem';
 
 export default class GameScene extends SceneBase {
 
@@ -20,6 +23,8 @@ export default class GameScene extends SceneBase {
 
     placeFarmlandSystem: PlaceFarmLandSystem = new PlaceFarmLandSystem(this);
     plowFarmlandSystem: PlowFarmLandSystem = new PlowFarmLandSystem(this);
+    plantFarmlandSystem: PlantFarmLandSystem = new PlantFarmLandSystem(this);
+    harvestFarmlandSystem: HarvestFarmLandSystem = new HarvestFarmLandSystem(this);
 
     constructor(camera: THREE.Camera, renderer: THREE.Renderer) {
         super(camera, renderer);
@@ -30,6 +35,7 @@ export default class GameScene extends SceneBase {
         await super.initialize();
         await Materials.initialize();
         await this.placeFarmlandSystem.initialize();
+        await Models.initialize();
 
         const farmHouse = await ModelUtils.createObjModel('assets/models/buildings/SM_Bld_Farmhouse_01.obj', Materials.data.get('main_material'));
         farmHouse.position.set(0, 0, 0);
@@ -58,12 +64,18 @@ export default class GameScene extends SceneBase {
         light.target = targetObject;
         this.add(targetObject);
 
-        const ambientLight = new THREE.AmbientLight(0xFFFFFF, .6);
+        const ambientLight = new THREE.AmbientLight(0xdeebff, .6);
 
         this.add(light);
         this.add(ambientLight);
 
         this.setUI();
+
+        setInterval(() => {
+            this.children.filter(node => node instanceof FarmLand).forEach(node => {
+                (node as FarmLand).onTimeSecond();
+            })
+        }, 1000)
     }
 
     override tick() {
@@ -73,11 +85,26 @@ export default class GameScene extends SceneBase {
     setUI() {
         const setFarmButton = document.getElementById('set-farm-button');
         const plowButton = document.getElementById('plow-button');
+        const openCropsButton = document.getElementById('set-crop-button');
+        const harvestButton = document.getElementById('harvest-button');
+        const cropsPanel = document.getElementById('crops-panel');
+        
+        openCropsButton!.onclick = () => {
+            if (cropsPanel!.classList.contains('hidden')) {
+                cropsPanel!.classList.remove('hidden');
+            } else {
+                cropsPanel!.classList.add('hidden');
+            }
+        }
 
         //Set plant buttons functionality
         const plantButtons = document.getElementsByClassName('crop-button');
         for (let i = 0; i < plantButtons.length; i++) {
-            plantButtons.item(i)?.classList.add('w-16', 'h-16', 'rounded-full', 'text-white', 'flex', 'items-center', 'justify-center', 'cursor-pointer', 'hover:ring-2', 'hover:shadow-lg', 'hover:ring-gray-400', 'hover:bg-gray-600', 'hover:-translate-y-1', 'active:translate-y-0', 'transition-all', 'duration-100');
+            plantButtons.item(i)!.classList.add('w-16', 'h-16', 'rounded-full', 'text-white', 'flex', 'items-center', 'justify-center', 'cursor-pointer', 'hover:ring-2', 'hover:shadow-lg', 'hover:ring-gray-400', 'hover:bg-gray-600', 'hover:-translate-y-1', 'active:translate-y-0', 'transition-all', 'duration-100');
+            (plantButtons.item(i)! as HTMLElement).onclick = () => {
+                const cropInfo = CropsInfo.get((plantButtons.item(i)! as HTMLElement).id.split('-')[0])!;
+                this.plantFarmlandSystem.togglePlanting(cropInfo);
+            };
         }
 
         //Generate plant tooltips content
@@ -150,6 +177,17 @@ export default class GameScene extends SceneBase {
             }
             
         }
+
+        harvestButton!.onclick = () => {
+            this.harvestFarmlandSystem.toggleHarvesting();
+            if (!this.harvestFarmlandSystem.isHarvesting) {
+                this.plowFarmlandSystem.endPlowMode();
+                harvestButton!.classList.remove('-translate-y-1', 'shadow-lg', 'bg-slate-700')
+            } else {
+                this.plowFarmlandSystem.startPlowMode();
+                harvestButton!.classList.add('-translate-y-1', 'shadow-lg', 'bg-slate-700')
+            }
+        }
     }
 
     async setFarmLand() {
@@ -170,6 +208,9 @@ export default class GameScene extends SceneBase {
         else if (this.plowFarmlandSystem.isPlowing) {
             this.plowFarmlandSystem.actionPlow(event, this.mainPlane);
         }
+
+        this.plantFarmlandSystem.plantAction(event);
+        this.harvestFarmlandSystem.harvestAction(event);
     }
 
     override onMouseDown(event: MouseEvent) {
